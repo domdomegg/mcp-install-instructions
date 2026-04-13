@@ -24,6 +24,7 @@ function deepLink(server: NormalizedServer): string | undefined {
 	}
 
 	const config = {name: server.name, config: {type: server.remote.transport === 'sse' ? 'sse' : 'http', url: server.remote.url}};
+	// eslint-disable-next-line no-restricted-globals -- btoa is the browser-compatible API; uint8array-extras is Node-only
 	const encoded = btoa(JSON.stringify(config)).replace(/\+/g, '-').replace(/\//g, '_').replace(/=+$/, '');
 	return `vscode:mcp/install?${encoded}`;
 }
