@@ -24,7 +24,7 @@ function deepLink(server: NormalizedServer): string | undefined {
 	}
 
 	const config = {name: server.name, config: {type: server.remote.transport === 'sse' ? 'sse' : 'http', url: server.remote.url}};
-	const encoded = Buffer.from(JSON.stringify(config)).toString('base64url');
+	const encoded = btoa(JSON.stringify(config)).replace(/\+/g, '-').replace(/\//g, '_').replace(/=+$/, '');
 	return `vscode:mcp/install?${encoded}`;
 }
 
