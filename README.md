@@ -1,6 +1,6 @@
 # mcp-install-instructions
 
-Generate per-client install instructions for MCP servers. Supports remote (HTTP), stdio (local), and [MCP registry `server.json`](https://github.com/modelcontextprotocol/registry) inputs.
+Generate per-client install instructions for MCP servers. Supports remote (HTTP/SSE), stdio (local), and [MCP registry `server.json`](https://github.com/modelcontextprotocol/registry) inputs.
 
 ## Usage
 
@@ -8,17 +8,20 @@ Generate per-client install instructions for MCP servers. Supports remote (HTTP)
 import {generateInstallInstructions} from 'mcp-install-instructions';
 
 // Remote server
-const instructions = generateInstallInstructions({url: 'https://mcp.example.com/mcp'});
+const result = generateInstallInstructions('claude-code', {url: 'https://mcp.example.com/mcp'});
+
+// SSE server
+const result = generateInstallInstructions('cursor', {url: 'https://mcp.example.com/sse', transport: 'sse'});
 
 // Stdio server
-const instructions = generateInstallInstructions({
+const result = generateInstallInstructions('vscode', {
   command: 'npx',
   args: ['-y', 'some-mcp-server'],
   env: {API_KEY: '...'},
 });
 
 // MCP registry server.json
-const instructions = generateInstallInstructions({
+const result = generateInstallInstructions('gemini-cli', {
   name: 'brave-search',
   packages: [{
     registryType: 'npm',
@@ -28,14 +31,37 @@ const instructions = generateInstallInstructions({
     environmentVariables: [{name: 'BRAVE_API_KEY', description: 'Your Brave API key'}],
   }],
 });
-
-// Filter to a specific client
-const instructions = generateInstallInstructions({url: 'https://mcp.example.com/mcp'}, {client: 'claude-code'});
 ```
 
-Returns an array of `ClientInstructions`, each with an `instructions` array containing `{label, text, markdown}` for different install methods (e.g. CLI, JSON config, deep link).
+Returns a `ClientInstructions` object:
 
-Supported clients: `claude-ai`, `claude-code`, `vscode`.
+```json
+{
+  "id": "claude-code",
+  "name": "Claude Code",
+  "methods": [
+    {
+      "label": "Via Claude.ai",
+      "text": "1. Add the server at claude.ai/customize/connectors with the URL: https://mcp.example.com/mcp\n2. It will automatically be available in Claude Code when logged in with the same account",
+      "markdown": "1. Add the server at [claude.ai/customize/connectors](https://claude.ai/customize/connectors) with the URL: https://mcp.example.com/mcp\n2. It will automatically be available in Claude Code when logged in with the same account"
+    },
+    {
+      "label": "CLI",
+      "text": "Run:\n\nclaude mcp add --transport http mcp-example-com https://mcp.example.com/mcp",
+      "markdown": "Run:\n\n```sh\nclaude mcp add --transport http mcp-example-com https://mcp.example.com/mcp\n```"
+    },
+    {
+      "label": "JSON config",
+      "text": "Add to your Claude Code config (~/.claude.json or .mcp.json):\n\n\"mcpServers\": {\n  \"mcp-example-com\": {\n    \"type\": \"url\",\n    \"url\": \"https://mcp.example.com/mcp\"\n  }\n}",
+      "markdown": "..."
+    }
+  ]
+}
+```
+
+Each method has a `label`, plain `text`, and `markdown` with links and code blocks. Clients that don't support the server type (e.g. Claude.ai with stdio) return an empty `methods` array.
+
+Supported clients: `chatgpt`, `claude-ai`, `claude-code`, `cline`, `codex`, `crush`, `cursor`, `gemini-cli`, `goose`, `hermes`, `librechat`, `opencode`, `openclaw`, `roo-code`, `vscode`, `windsurf`.
 
 ## Contributing
 

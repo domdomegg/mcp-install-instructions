@@ -2,7 +2,7 @@ import type {NormalizedServer, InstructionMode} from '../types';
 
 function mcpServersJson(server: NormalizedServer): string {
 	if (server.remote) {
-		return JSON.stringify({[server.name]: {type: 'url', url: server.remote.url}}, null, 2);
+		return JSON.stringify({[server.name]: {type: server.remote.transport === 'sse' ? 'sse' : 'url', url: server.remote.url}}, null, 2);
 	}
 
 	const entry: Record<string, unknown> = {
@@ -20,18 +20,38 @@ function mcpServersJson(server: NormalizedServer): string {
 export function claudeCode(server: NormalizedServer): InstructionMode[] {
 	const modes: InstructionMode[] = [];
 
+	// Claude.ai integration (remote only)
+	if (server.remote) {
+		const textSteps = [
+			`Add the server at claude.ai/customize/connectors with the URL: ${server.remote.url}`,
+			'It will automatically be available in Claude Code when logged in with the same account',
+		].map((s, i) => `${i + 1}. ${s}`).join('\n');
+
+		const mdSteps = [
+			`Add the server at [claude.ai/customize/connectors](https://claude.ai/customize/connectors) with the URL: ${server.remote.url}`,
+			'It will automatically be available in Claude Code when logged in with the same account',
+		].map((s, i) => `${i + 1}. ${s}`).join('\n');
+
+		modes.push({
+			label: 'Via Claude.ai',
+			text: textSteps,
+			markdown: mdSteps,
+		});
+	}
+
 	// CLI
 	if (server.remote) {
-		const cmd = `claude mcp add --transport http ${server.name} ${server.remote.url}`;
+		const transport = server.remote.transport === 'sse' ? 'sse' : 'http';
+		const cmd = `claude mcp add --transport ${transport} ${server.name} ${server.remote.url}`;
 		modes.push({
 			label: 'CLI',
 			text: `Run:\n\n${cmd}`,
 			markdown: `Run:\n\n\`\`\`sh\n${cmd}\n\`\`\``,
 		});
 	} else {
-		const parts = ['claude mcp add', server.name, server.stdio!.command, ...server.stdio!.args];
-		const envFlags = Object.entries(server.stdio!.env).map(([k, v]) => `-e ${k}=${v}`);
-		const cmd = [...parts, ...envFlags].join(' ');
+		const envFlags = Object.entries(server.stdio!.env).map(([k, v]) => `--env ${k}=${v}`);
+		const parts = ['claude mcp add', ...envFlags, server.name, '--', server.stdio!.command, ...server.stdio!.args];
+		const cmd = parts.join(' ');
 		modes.push({
 			label: 'CLI',
 			text: `Run:\n\n${cmd}`,

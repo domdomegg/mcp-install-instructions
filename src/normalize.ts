@@ -4,7 +4,7 @@ function isServerJson(input: ServerInput): input is ServerJson {
 	return 'name' in input && ('packages' in input || 'remotes' in input);
 }
 
-function isRemote(input: ServerInput): input is {url: string; name?: string} {
+function isRemote(input: ServerInput): input is {url: string; name?: string; transport?: 'http' | 'sse'} {
 	return 'url' in input && !('packages' in input || 'remotes' in input);
 }
 
@@ -27,7 +27,7 @@ export function normalize(input: ServerInput): NormalizedServer {
 	if (isRemote(input)) {
 		return {
 			name: input.name ?? nameFromUrl(input.url),
-			remote: {url: input.url},
+			remote: {url: input.url, transport: input.transport ?? 'http'},
 		};
 	}
 
@@ -47,7 +47,7 @@ function normalizeServerJson(json: ServerJson): NormalizedServer {
 
 	if (json.remotes?.length) {
 		const remote = json.remotes[0]!;
-		server.remote = {url: remote.url};
+		server.remote = {url: remote.url, transport: remote.type === 'sse' ? 'sse' : 'http'};
 	}
 
 	if (json.packages?.length) {

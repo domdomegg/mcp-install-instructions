@@ -2,6 +2,7 @@
 export type RemoteServerInput = {
 	url: string;
 	name?: string;
+	transport?: 'http' | 'sse';
 };
 
 /** Local MCP server (stdio) */
@@ -61,7 +62,7 @@ export type ServerInput = RemoteServerInput | StdioServerInput | ServerJson;
 /** Normalized internal representation used by generators */
 export type NormalizedServer = {
 	name: string;
-	remote?: {url: string};
+	remote?: {url: string; transport: 'http' | 'sse'};
 	stdio?: {command: string; args: string[]; env: Record<string, string>};
 };
 
@@ -74,5 +75,5 @@ export type InstructionMode = {
 export type ClientInstructions = {
 	id: string;
 	name: string;
-	instructions: InstructionMode[];
+	methods: InstructionMode[];
 };

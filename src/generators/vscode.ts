@@ -1,9 +1,9 @@
 import type {NormalizedServer, InstructionMode} from '../types';
 
-function settingsJson(server: NormalizedServer): string {
+function mcpJson(server: NormalizedServer): string {
 	let entry: Record<string, unknown>;
 	if (server.remote) {
-		entry = {type: 'http', url: server.remote.url};
+		entry = {type: server.remote.transport === 'sse' ? 'sse' : 'http', url: server.remote.url};
 	} else {
 		entry = {
 			type: 'stdio',
@@ -15,7 +15,7 @@ function settingsJson(server: NormalizedServer): string {
 		}
 	}
 
-	return JSON.stringify({[`mcp.${server.name}`]: entry}, null, 2);
+	return JSON.stringify({servers: {[server.name]: entry}}, null, 2);
 }
 
 function deepLink(server: NormalizedServer): string | undefined {
@@ -23,7 +23,7 @@ function deepLink(server: NormalizedServer): string | undefined {
 		return undefined;
 	}
 
-	const config = {name: server.name, config: {type: 'http', url: server.remote.url}};
+	const config = {name: server.name, config: {type: server.remote.transport === 'sse' ? 'sse' : 'http', url: server.remote.url}};
 	const encoded = Buffer.from(JSON.stringify(config)).toString('base64url');
 	return `vscode:mcp/install?${encoded}`;
 }
@@ -42,11 +42,11 @@ export function vscode(server: NormalizedServer): InstructionMode[] {
 	}
 
 	// JSON config
-	const json = settingsJson(server);
+	const json = mcpJson(server);
 	modes.push({
 		label: 'JSON config',
-		text: `Add to your VS Code settings (settings.json):\n\n${json}`,
-		markdown: `Add to your VS Code settings (\`settings.json\`):\n\n\`\`\`json\n${json}\n\`\`\``,
+		text: `Add to .vscode/mcp.json (or run "MCP: Open User Configuration" from the Command Palette for global config):\n\n${json}`,
+		markdown: `Add to \`.vscode/mcp.json\` (or run **MCP: Open User Configuration** from the Command Palette for global config):\n\n\`\`\`json\n${json}\n\`\`\``,
 	});
 
 	return modes;
