@@ -1,6 +1,6 @@
 {
   "name": "mcp-install-instructions",
-  "version": "0.1.0",
+  "version": "1.0.0",
   "description": "Generate per-client install instructions for MCP servers",
   "license": "MIT",
   "author": "Adam Jones (domdomegg)",
