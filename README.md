@@ -61,7 +61,9 @@ Returns a `ClientInstructions` object:
 
 Each method has a `label`, plain `text`, and `markdown` with links and code blocks. Clients that don't support the server type (e.g. Claude.ai with stdio) return an empty `methods` array.
 
-Supported clients: `chatgpt`, `claude-ai`, `claude-code`, `cline`, `codex`, `crush`, `cursor`, `gemini-cli`, `goose`, `hermes`, `librechat`, `opencode`, `openclaw`, `roo-code`, `vscode`, `windsurf`.
+Supported clients: `amp`, `antigravity`, `chatgpt`, `claude-ai`, `claude-code`, `cline`, `codex`, `command-code`, `copilot-cli`, `crush`, `cursor`, `factory-cli`, `gemini-cli`, `gemini-code-assist`, `goose`, `hermes`, `jetbrains`, `katalon`, `kiro`, `librechat`, `mistral-vibe`, `opencode`, `openclaw`, `qoder`, `qoder-cli`, `roo-code`, `visual-studio`, `vscode`, `warp`, `windsurf`.
+
+The full list is also exported as `clientIds`.
 
 ## Contributing
 
