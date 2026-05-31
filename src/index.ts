@@ -4,6 +4,7 @@ import type {
 import {normalize} from './normalize';
 import {amp} from './generators/amp';
 import {antigravity} from './generators/antigravity';
+import {callMcp} from './generators/call-mcp';
 import {chatgpt} from './generators/chatgpt';
 import {claudeAi} from './generators/claude-ai';
 import {claudeCode} from './generators/claude-code';
@@ -40,6 +41,7 @@ export type {
 const clients = {
 	amp: {name: 'Amp', generate: amp},
 	antigravity: {name: 'Antigravity', generate: antigravity},
+	'call-mcp': {name: 'call-mcp', generate: callMcp},
 	chatgpt: {name: 'ChatGPT', generate: chatgpt},
 	'claude-ai': {name: 'Claude.ai', generate: claudeAi},
 	'claude-code': {name: 'Claude Code', generate: claudeCode},
