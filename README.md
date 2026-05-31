@@ -2,6 +2,8 @@
 
 Generate per-client install instructions for MCP servers. Supports remote (HTTP/SSE), stdio (local), and [MCP registry `server.json`](https://github.com/modelcontextprotocol/registry) inputs.
 
+This library powers [install-mcp](https://github.com/domdomegg/install-mcp), a website that shows these instructions for any MCP server ([view live](https://adamjones.me/install-mcp/)).
+
 ## Usage
 
 ```ts
