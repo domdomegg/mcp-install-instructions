@@ -3,12 +3,11 @@ import type {NormalizedServer, InstructionMode} from '../types';
 function mcpServersJson(server: NormalizedServer): string {
 	let entry: Record<string, unknown>;
 	if (server.remote) {
-		entry = {url: server.remote.url, transportType: server.remote.transport === 'sse' ? 'sse' : 'streamable-http'};
+		entry = {type: server.remote.transport === 'sse' ? 'sse' : 'streamableHttp', url: server.remote.url};
 	} else {
 		entry = {
 			command: server.stdio!.command,
 			args: server.stdio!.args,
-			transportType: 'stdio',
 		};
 		if (Object.keys(server.stdio!.env).length > 0) {
 			entry.env = server.stdio!.env;

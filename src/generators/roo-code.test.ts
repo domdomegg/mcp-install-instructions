@@ -12,8 +12,8 @@ test('remote', () => {
 		{
 		  "mcpServers": {
 		    "test": {
-		      "url": "https://example.com/mcp",
-		      "transportType": "streamable-http"
+		      "type": "streamable-http",
+		      "url": "https://example.com/mcp"
 		    }
 		  }
 		}
@@ -23,8 +23,8 @@ test('remote', () => {
 		{
 		  "mcpServers": {
 		    "test": {
-		      "url": "https://example.com/mcp",
-		      "transportType": "streamable-http"
+		      "type": "streamable-http",
+		      "url": "https://example.com/mcp"
 		    }
 		  }
 		}",
@@ -51,7 +51,6 @@ test('stdio', () => {
 		        "-y",
 		        "my-server"
 		      ],
-		      "transportType": "stdio",
 		      "env": {
 		        "KEY": "val"
 		      }
@@ -69,7 +68,6 @@ test('stdio', () => {
 		        "-y",
 		        "my-server"
 		      ],
-		      "transportType": "stdio",
 		      "env": {
 		        "KEY": "val"
 		      }
